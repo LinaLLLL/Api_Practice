@@ -24,6 +24,11 @@
                 Instance = httpContext.Request.Path
             };
 
+            if(exception is ValidationException validationException)
+            {
+                problems.Extensions.Add("Errors", validationException.Errors);
+            }
+
             await httpContext.Response.WriteAsJsonAsync(problems, cancellationToken:cancellationToken);
             return true;
             

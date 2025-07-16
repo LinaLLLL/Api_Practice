@@ -20,7 +20,7 @@
 
             if (failres.Any())
             {
-                throw new Exception("Ошибка валидации");
+                throw new ValidationException(failres);
             }
             return await next();
 
