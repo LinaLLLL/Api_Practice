@@ -1,4 +1,5 @@
 using FirstMicroservice.Behaviors;
+using FirstMicroservice.Exceptions.Handler;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +19,11 @@ builder.Services.AddValidatorsFromAssembly(assembly);
 
 builder.Services.AddCarter();
 
+builder.Services.AddExceptionHandler<CustomExceptionHandler>();
+
 var app = builder.Build();
+
+app.UseExceptionHandler(opt => { });
 
 app.MapCarter();
 
