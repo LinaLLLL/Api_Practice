@@ -1,0 +1,32 @@
+﻿namespace FirstMicroservice.Exceptions.Handler
+{
+    public class CustomExceptionHandler(ILogger<CustomExceptionHandler> logger) : IExceptionHandler
+    {
+        public async ValueTask<bool> TryHandleAsync(
+            HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
+        {
+            logger.LogError("Ошибки: {exceptionMessage}, время {time}",
+                exception.Message,
+                DateTime.Now
+            );
+
+            (string Detail, string Title, int StatusCode) details = exception switch
+            {
+                _ => (exception.Message, exception.GetType().Name, 
+                httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError)
+            };
+
+            var problems = new ProblemDetails
+            {
+                Title = details.Title,
+                Detail = details.Detail,
+                Status = details.StatusCode,
+                Instance = httpContext.Request.Path
+            };
+
+            await httpContext.Response.WriteAsJsonAsync(problems, cancellationToken:cancellationToken);
+            return true;
+            
+        }
+    }
+}
